@@ -6,10 +6,10 @@ export function sendMsg() {
     const userMsg = document.getElementById('input').value
     const body = {
         message: userMsg,
-        apikey: 'RqYPNGDOE0p_ENf_eFQ7SNAWP9PjTIBr',
-        agentId: '02a297f6-a850-41b4-9c7f-b2edd894440a'
+        apikey: '', // <- YOUR API KEY
+        agentId: '' // <- YOUR USER ID
     }
-    fetchEventSource('https://stage.codegpt.co/api/agent', {
+    fetchEventSource('https://judini.ai/api/v1/completion', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
