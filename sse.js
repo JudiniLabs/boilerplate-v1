@@ -5,14 +5,14 @@ export function sendMsg() {
     let signal = new AbortController()
     const userMsg = document.getElementById('input').value
     const body = {
-        message: userMsg,
-        apikey: '', // <- YOUR API KEY
-        agentId: '' // <- YOUR USER ID
+        messages: [{role:'user',content:userMsg}],
     }
-    fetchEventSource('https://judini.ai/api/v1/completion', {
+    const apiKey = ''
+    fetchEventSource('https://playground.judini.ai/api/v1/agent', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            Authorization: 'Bearer '+ apiKey
         },
         body: JSON.stringify(body),
         bodyTimeout: 0,
@@ -46,18 +46,15 @@ export function sendMsg() {
             if (msg.data.includes('data: [DONE]')) {
                 signal.abort()
                 return
-            }
+            }// msg.data
             try {
                 const data = msg.data.split('\n\n')
                 for (let i = 0; i < data.length; i++) {
-                    const element = data[i]
-                    if (element.includes('data: "')) {
-                        const data = element.replaceAll('data: "', '').trimEnd().slice(0, -1)
-                        if (data !== undefined) {
-                            response += data
+                    const element = JSON.parse(data[i].replace('data: ', ''))
+                        if (element.data !== undefined) {
+                            response += element.data
                             updateTextArea(response) // update the text area with the response gradually
                         }
-                    }
                 }
             } catch (e) {
                 console.error(e)
